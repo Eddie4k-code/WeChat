@@ -1,0 +1,32 @@
+version: "3"
+
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    env_file: .backend-env
+
+  mongodb:
+    image: mongo:latest
+    ports: 
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  client:
+    build:
+      context: ./client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    env_file: .client-env
+
+
+volumes:
+  mongodb_data:  # Define the volume for MongoDB data
