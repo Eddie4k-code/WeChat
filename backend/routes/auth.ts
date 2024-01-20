@@ -12,16 +12,15 @@ authRouter.post('/api/auth/register', async (req: Request, res: Response) => {
 
         const {username, password} = req.body;
 
+        if (!username || !password) {
+            throw new Error("Username and password is required.")
+        }
+
         const userExists = await UserModel.findOne({username: username});
 
         if (userExists) {
             throw new Error("User with that Username already exists.");
         }
-
-        if (!username || !password) {
-            throw new Error("Username and password is required.")
-        }
-
 
         //Generate Salt
         const salt = await bcrypt.genSalt(10);
@@ -36,11 +35,13 @@ authRouter.post('/api/auth/register', async (req: Request, res: Response) => {
 
         user.save();
 
+        const userJwt = jwt.sign({id: user._id}, process.env.JWT_SECRET!);
 
-        return res.status(200).json({message: "User Registered!"});
+
+        return res.status(200).json({username: username, token: userJwt});
 
     } catch(err:any) {
-        return res.json({ErrorMessage: err.message});
+        return res.status(401).json({ErrorMessage: err.message});
     }
 });
 
@@ -76,7 +77,7 @@ authRouter.post('/api/auth/login', async (req: Request, res: Response) => {
 
 
     } catch(err:any) {
-        return res.json({ErrorMessage: err.message});
+        return res.status(401).json({ErrorMessage: err.message});
     }
 });
 

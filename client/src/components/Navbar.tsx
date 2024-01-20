@@ -1,5 +1,7 @@
 
 import { AppBar, Toolbar, Typography, Button, makeStyles } from '@material-ui/core';
+import { NavLink} from 'react-router-dom';
+import { useAppSelector } from '../reduxStore/configureStore';
 
 const useStyles = makeStyles((theme: any) => ({
   appBar: {
@@ -13,24 +15,51 @@ const useStyles = makeStyles((theme: any) => ({
   },
 }));
 
+
+
 export const Navbar = () => {
   const classes = useStyles();
+  const {user} = useAppSelector(state => state.user);
+
+  const authenticatedNavItems = [
+    {name: "Chat Servers", path:"/servers"},
+  ]
+
+  const notAuthenticatedNavItems = [
+    {name: "Login", path:"/login"},
+    {name: "Register", path:"/register"}
+  ]
+
 
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
-          Your App Name
+          WeChat
         </Typography>
-        <Button color="inherit" className={classes.button}>
-          Login
-        </Button>
-        <Button color="inherit" className={classes.button}>
-          Register
-        </Button>
-        <Button color="inherit" className={classes.button}>
-          Chat Servers
-        </Button>
+        
+        {user ? (
+        //show nav items that require authentication
+        authenticatedNavItems.map(item => (
+          <Typography key={item.name} color="inherit" className={classes.button} component={NavLink} to={item.path}>
+          {item.name}
+        </Typography>
+
+        ))
+
+       
+    
+      ) : (
+        // show nav items that dont require authentication
+        notAuthenticatedNavItems.map(item => (
+          <Typography key={item.name} color="inherit" className={classes.button} component={NavLink} to={item.path}>
+          {item.name}
+        </Typography>
+
+        ))
+      )}
+
+
       </Toolbar>
     </AppBar>
   );

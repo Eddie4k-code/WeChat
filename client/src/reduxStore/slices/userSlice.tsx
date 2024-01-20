@@ -7,7 +7,12 @@ import axios from 'axios';
 
 interface UserState {
     user: User | null,
-    error: string | null
+    error: any
+}
+
+interface UserFields {
+    username: string
+    password: string
 }
 
 
@@ -17,7 +22,7 @@ const initalState: UserState = {
 }
 
 
-export const loginUser = createAsyncThunk<User, any>('user/loginUser', async (data: any, thunkAPI: any) => {
+export const loginUser = createAsyncThunk<User, any>('user/loginUser', async (data: UserFields, thunkAPI) => {
     try {
 
         const user = await axios.post(`http://localhost:5000/api/auth/login`, {username: data.username, password:data.password});
@@ -28,7 +33,23 @@ export const loginUser = createAsyncThunk<User, any>('user/loginUser', async (da
 
 
     } catch (err:any) {
-        console.log("Logging error...");
+        return thunkAPI.rejectWithValue({error: err.response?.data?.ErrorMessage || 'An Error has Occured'});
+
+    }
+});
+
+
+export const registerUser = createAsyncThunk<User, any>('user/registerUser', async (data: UserFields, thunkAPI) => {
+    try {
+
+        const newUser = await axios.post(`http://localhost:5000/api/auth/register`, {username: data.username, password:data.password});
+
+        localStorage.setItem('user', JSON.stringify(newUser));
+
+        return newUser.data;
+
+
+    } catch (err:any) {
         return thunkAPI.rejectWithValue({error: err.response?.data?.ErrorMessage || 'An Error has Occured'});
 
     }
@@ -49,11 +70,21 @@ export const userSlice = createSlice({
         });
 
         builder.addCase(loginUser.rejected, (state, action) => {
-            state.user = null
-            state.error = action.error?.message || 'An Error has occured'
+            state.user = null;
+            state.error = action.payload || 'An Error has occured';
         });
 
         //handle cases for when user registers
+
+        builder.addCase(registerUser.fulfilled, (state, action) => {
+            state.user = action.payload;
+        });
+
+        builder.addCase(registerUser.rejected, (state, action) => {
+            state.user = null;
+            state.error = action.payload || 'An error has occured';
+        });
+
 
 
 

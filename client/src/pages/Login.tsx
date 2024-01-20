@@ -95,7 +95,7 @@ const Login = () => {
           </Button>
         </form>
       </Paper>
-      {error && <h1>{error}</h1>}
+      {error && <h1>{error.error}</h1>}
     </Container>
   );
 };

@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { ReactEventHandler, useState } from 'react';
 import { Container, Paper, Avatar, Typography, TextField, Button, makeStyles } from '@material-ui/core';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { linkClasses } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { AppDispatch, useAppSelector } from '../reduxStore/configureStore';
+import { registerUser } from '../reduxStore/slices/userSlice';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -29,6 +32,20 @@ const useStyles = makeStyles((theme) => ({
 
 const Register = () => {
   const classes = useStyles();
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const {user, error} = useAppSelector(state => state.user);
+
+
+  const handleRegister = async (e: React.FormEvent) => {
+
+    e.preventDefault();
+    setLoading(true);
+    await dispatch(registerUser({username:username, password: password})).then(data => console.log(data));
+    console.log(user);
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -39,7 +56,7 @@ const Register = () => {
         <Typography component="h1" variant="h5">
           Register
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={handleRegister}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -50,6 +67,8 @@ const Register = () => {
             name="username"
             autoComplete="username"
             autoFocus
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
             variant="outlined"
@@ -61,6 +80,8 @@ const Register = () => {
             type="password"
             id="password"
             autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <Button
             type="submit"
@@ -72,6 +93,7 @@ const Register = () => {
           </Button>
         </form>
       </Paper>
+      {error && <h1>{error.error}</h1>}
     </Container>
   );
 };
