@@ -37,6 +37,36 @@ serverRouter.post('/api/server/create', verifyJWT, async (req:Request, res:Respo
 });
 
 
+//Join a new server
+serverRouter.post("/api/server/join", verifyJWT, async (req: Request, res: Response) => {
+
+    try {
+
+        const {serverCode} = req.body;
+
+        if (!serverCode) {
+            throw new Error("You must provide a server code.")
+            return
+        }
+
+        //use web socket here to join the server in a live matter
+
+
+
+
+    } catch(err:any) {
+
+
+        return res.status(400).json({ErrorMessage: err.message})
+
+    }
+
+});
+
+
+
+
+
 
 
 

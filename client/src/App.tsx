@@ -2,12 +2,14 @@
 import './App.css'
 import React from 'react'
 import { Navbar } from './components/Navbar'
-const App = () => {
+import { Outlet } from 'react-router-dom';
 
+const App = () => {
 
   return (
     <>
     <Navbar />
+    <Outlet />
     </>
   );
 }

@@ -66,6 +66,7 @@ export const userSlice = createSlice({
     extraReducers: (builder => {
         //handle cases for when user logs in.
         builder.addCase(loginUser.fulfilled, (state, action) => {
+            state.error = null;
             state.user = action.payload;
         });
 
@@ -78,6 +79,7 @@ export const userSlice = createSlice({
 
         builder.addCase(registerUser.fulfilled, (state, action) => {
             state.user = action.payload;
+            state.error = null;
         });
 
         builder.addCase(registerUser.rejected, (state, action) => {

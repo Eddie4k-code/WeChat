@@ -3,8 +3,8 @@ import { Container, Paper, Avatar, Typography, TextField, Button, makeStyles } f
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { linkClasses } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../reduxStore/slices/userSlice';
-import { AppDispatch, useAppSelector } from '../reduxStore/configureStore';
+import { loginUser } from '../../reduxStore/slices/userSlice';
+import { AppDispatch, useAppSelector } from '../../reduxStore/configureStore';
 
 
 

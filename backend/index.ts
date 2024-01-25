@@ -4,8 +4,33 @@ import mongoose, { mongo } from 'mongoose';
 import authRouter from "./routes/auth";
 import serverRouter from "./routes/server";
 import channelRouter from "./routes/channel";
+import {createServer} from 'http';
+import Websocket from "./websocket/websocket";
+require('dotenv').config();
 
 const app = express();
+const server = createServer(app);
+
+const ws = Websocket.getInstance(server);
+
+
+ws.on('connection', (socket) => {
+
+    socket.on('join', (roomCode: number) => {
+        //logic to join a server
+    });
+
+    socket.on("leave", (roomCode: number) => {
+        //logic to leave a server
+    });
+
+    socket.on("sendMessage", (message: any) => {
+        ws.in(message.room!).emit("messageSent", message.body);
+    });
+
+});
+
+
 
 app.use(cors());
 app.use(express.json());
