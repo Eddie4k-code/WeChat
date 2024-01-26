@@ -18,7 +18,7 @@ ws.on('connection', (socket) => {
 
     socket.on('join', (roomCode: number) => {
         //logic to join a server
-    });
+    }); 
 
     socket.on("leave", (roomCode: number) => {
         //logic to leave a server

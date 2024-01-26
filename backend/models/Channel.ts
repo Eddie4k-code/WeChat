@@ -1,5 +1,6 @@
 import { Schema, model, Document } from 'mongoose';
 
+/*
 interface ChannelDocument extends Document {
     channelName: string;
     server: string;  // Reference to the Server model
@@ -23,3 +24,5 @@ const channelSchema = new Schema({
 const ChannelModel = model<ChannelDocument>('Channel', channelSchema);
 
 export default ChannelModel;
+
+*/

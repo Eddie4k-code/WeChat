@@ -2,6 +2,7 @@ import express, {Request, Response, NextFunction, Router} from 'express';
 import UserModel from '../models/User';
 import ServerModel from '../models/Server';
 import verifyJWT from '../middleware/verifyJWT';
+import Server from '../models/Server';
 
 const serverRouter = Router();
 
@@ -42,10 +43,10 @@ serverRouter.post("/api/server/join", verifyJWT, async (req: Request, res: Respo
 
     try {
 
-        const {serverCode} = req.body;
+        const {serverName} = req.body;
 
-        if (!serverCode) {
-            throw new Error("You must provide a server code.")
+        if (!serverName) {
+            throw new Error("You must provide a server name.")
             return
         }
 
@@ -57,10 +58,35 @@ serverRouter.post("/api/server/join", verifyJWT, async (req: Request, res: Respo
     } catch(err:any) {
 
 
-        return res.status(400).json({ErrorMessage: err.message})
+        return res.status(400).json({ErrorMessage: err.message});
 
     }
 
+});
+
+//add a new message to a server 
+serverRouter.post("/api/server/message/new", verifyJWT, async (req: Request, res: Response) => {
+    try {
+        const { serverName, message, user} = req.body;
+
+        if (!serverName) {
+            throw new Error("Server name is missing...");
+        }
+
+        const server = await Server.findOne({ serverName });
+
+        if (!server) {
+            throw new Error("No server exists with the given name.");
+        }
+
+        server.messages.push({sender: req.body.user.id, text: message.text});
+        await server.save();
+
+        return res.status(200).json({ success: true, message: "Message added successfully." });
+
+    } catch (err: any) {
+        return res.status(400).json({ ErrorMessage: err.message });
+    }
 });
 
 
