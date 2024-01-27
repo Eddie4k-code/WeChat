@@ -3,8 +3,8 @@ import { IncomingHttpHeaders } from 'http';
 import jwt from 'jsonwebtoken';
 
 const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
-    const headers = req.headers as IncomingHttpHeaders;
-    const authorizationHeader = headers.authorization;
+    const headers = req.headers;
+    const authorizationHeader = headers.authorization as string;
 
     if (!authorizationHeader) {
         return res.status(401).json({ error: 'Unauthorized - Missing Authorization Header' });

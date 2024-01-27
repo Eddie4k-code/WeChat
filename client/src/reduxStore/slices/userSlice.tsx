@@ -25,11 +25,9 @@ const initalState: UserState = {
 export const loginUser = createAsyncThunk<User, any>('user/loginUser', async (data: UserFields, thunkAPI) => {
     try {
 
-        const user = await axios.post(`http://localhost:5000/api/auth/login`, {username: data.username, password:data.password});
+        const user = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/login`, {username: data.username, password:data.password});
 
         localStorage.setItem('user', JSON.stringify(user.data));
-        axios.defaults.headers.common['Authorization'] = `Bearer ${user.data.token}`;
-
         return user.data;
 
 
@@ -43,10 +41,9 @@ export const loginUser = createAsyncThunk<User, any>('user/loginUser', async (da
 export const registerUser = createAsyncThunk<User, any>('user/registerUser', async (data: UserFields, thunkAPI) => {
     try {
 
-        const newUser = await axios.post(`http://localhost:5000/api/auth/register`, {username: data.username, password:data.password});
+        const newUser = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/register`, {username: data.username, password:data.password});
 
         localStorage.setItem('user', JSON.stringify(newUser.data));
-        axios.defaults.headers.common['Authorization'] = `Bearer ${newUser.data.token}`;
 
         return newUser.data;
 
@@ -61,7 +58,7 @@ export const verifyUser = createAsyncThunk<any>('user/verifyUser', async (_, thu
 
     try {
 
-        const response = await axios.get('http://localhost:5000/api/auth/verifyUser');
+        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/verifyUser`, {headers: {"Authorization": "Bearer " + JSON.parse(localStorage.getItem("user")!).token}});
 
         console.log("Is the user verified???");
 

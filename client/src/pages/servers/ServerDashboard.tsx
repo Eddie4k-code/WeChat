@@ -39,7 +39,7 @@ const ServerDashboard: React.FC = () => {
   
   const handleCreateServer = async () => {
 
-    const response = await axios.get('/server/create', {params: {serverName: serverName, username: user!.username}}); 
+    const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/server/create`, {params: {serverName: serverName, username: user!.username}}); 
     
     console.log("Server Created", response.data.server.serverName);
 
