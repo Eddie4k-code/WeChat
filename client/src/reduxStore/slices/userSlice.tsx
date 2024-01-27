@@ -27,7 +27,8 @@ export const loginUser = createAsyncThunk<User, any>('user/loginUser', async (da
 
         const user = await axios.post(`http://localhost:5000/api/auth/login`, {username: data.username, password:data.password});
 
-        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('user', JSON.stringify(user.data));
+        axios.defaults.headers.common['Authorization'] = `Bearer ${user.data.token}`;
 
         return user.data;
 
@@ -44,7 +45,8 @@ export const registerUser = createAsyncThunk<User, any>('user/registerUser', asy
 
         const newUser = await axios.post(`http://localhost:5000/api/auth/register`, {username: data.username, password:data.password});
 
-        localStorage.setItem('user', JSON.stringify(newUser));
+        localStorage.setItem('user', JSON.stringify(newUser.data));
+        axios.defaults.headers.common['Authorization'] = `Bearer ${newUser.data.token}`;
 
         return newUser.data;
 
@@ -54,6 +56,34 @@ export const registerUser = createAsyncThunk<User, any>('user/registerUser', asy
 
     }
 });
+
+export const verifyUser = createAsyncThunk<any>('user/verifyUser', async (_, thunkAPI) => {
+
+    try {
+
+        const response = await axios.get('http://localhost:5000/api/auth/verifyUser');
+
+        console.log("Is the user verified???");
+
+        console.log(response.data);
+
+        return response.data;
+
+    } catch (err:any) {
+        return thunkAPI.rejectWithValue({error: err.response?.data?.ErrorMessage || 'An Error has Occured'});
+    }
+    
+    },
+
+    {   //verifyUser will only occur if user is in localstorage.
+        condition: () => {
+            if (!localStorage.getItem("user")) {
+                return false;
+            }
+        }
+    }
+
+);
 
 
 
@@ -85,6 +115,22 @@ export const userSlice = createSlice({
         builder.addCase(registerUser.rejected, (state, action) => {
             state.user = null;
             state.error = action.payload || 'An error has occured';
+        });
+
+
+        //handle case for when user is verified
+        builder.addCase(verifyUser.fulfilled, (state) => {
+
+            const verifiedUser = JSON.parse(localStorage.getItem('user')!);
+
+            state.user = verifiedUser;
+            
+
+        });
+
+        builder.addCase(verifyUser.rejected, (state, action) => {
+            state.user = null;
+            state.error = action.payload || 'User is not verified!';
         });
 
 

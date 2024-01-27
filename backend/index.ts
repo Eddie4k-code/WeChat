@@ -3,7 +3,6 @@ import cors from "cors";
 import mongoose, { mongo } from 'mongoose';
 import authRouter from "./routes/auth";
 import serverRouter from "./routes/server";
-import channelRouter from "./routes/channel";
 import {createServer} from 'http';
 import Websocket from "./websocket/websocket";
 require('dotenv').config();
@@ -37,7 +36,7 @@ app.use(express.json());
 
 app.use(authRouter);
 app.use(serverRouter);
-app.use(channelRouter);
+
 
 app.listen(process.env.port || 5000, () => {
     console.log("Backend is running");

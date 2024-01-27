@@ -1,5 +1,5 @@
 // Import necessary Material-UI components and styles
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Container,
@@ -9,6 +9,10 @@ import {
   Grid,
   TextField,
 } from '@material-ui/core';
+
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../reduxStore/configureStore';
 
 // Define styles using makeStyles
 const useStyles = makeStyles((theme: Theme) =>
@@ -29,16 +33,21 @@ const useStyles = makeStyles((theme: Theme) =>
 // Define the ServerDashboard component
 const ServerDashboard: React.FC = () => {
   const classes = useStyles();
+  const [serverName, setServerName] = useState<string>("");
+  const {user} = useAppSelector(state => state.user);
 
-  // Dummy function for handling server creation
-  const handleCreateServer = () => {
-    // Implement your logic for server creation here
-    console.log('Creating a new server...');
+  
+  const handleCreateServer = async () => {
+
+    const response = await axios.get('/server/create', {params: {serverName: serverName, username: user!.username}}); 
+    
+    console.log("Server Created", response.data.server.serverName);
+
   };
 
-  // Dummy function for handling joining a server
+  
   const handleJoinServer = () => {
-    // Implement your logic for joining a server here
+    
     console.log('Joining an existing server...');
   };
 
@@ -56,7 +65,8 @@ const ServerDashboard: React.FC = () => {
               label="Server Name"
               variant="outlined"
               fullWidth
-              // Add necessary props and state for handling input
+              value={serverName}
+              onChange={(e) => setServerName(e.target.value)}
             />
             <Button
               variant="contained"
@@ -75,7 +85,6 @@ const ServerDashboard: React.FC = () => {
               label="Server Code"
               variant="outlined"
               fullWidth
-              // Add necessary props and state for handling input
             />
             <Button
               variant="contained"

@@ -2,6 +2,7 @@ import express, {Request, Response, NextFunction, Router} from 'express';
 import UserModel from '../models/User';
 import bcrypt from 'bcryptjs';
 import jwt, { JsonWebTokenError } from 'jsonwebtoken';
+import verifyJWT from '../middleware/verifyJWT';
 
 const authRouter = Router();
 
@@ -79,6 +80,17 @@ authRouter.post('/api/auth/login', async (req: Request, res: Response) => {
     } catch(err:any) {
         return res.status(401).json({ErrorMessage: err.message});
     }
+});
+
+//verify user.
+authRouter.get('/api/auth/verifyUser', verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+        return res.status(200).json({message: "Authenticated"});
+
+    } catch (err:any) {
+        return res.status(401).json({ErrorMessage: err.message});
+    } 
 });
 
 
