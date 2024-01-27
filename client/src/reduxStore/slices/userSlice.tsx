@@ -3,11 +3,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { User } from "../../models/User";
 import axios from 'axios';
+import axiosHttp from "../../api/api";
+import { StarRateRounded } from "@mui/icons-material";
 
 
-interface UserState {
+export interface UserState {
     user: User | null,
     error: any
+    loading: boolean,
 }
 
 interface UserFields {
@@ -18,7 +21,8 @@ interface UserFields {
 
 const initalState: UserState = {
     user: null,
-    error: null
+    error: null,
+    loading: true
 }
 
 
@@ -54,11 +58,11 @@ export const registerUser = createAsyncThunk<User, any>('user/registerUser', asy
     }
 });
 
-export const verifyUser = createAsyncThunk<any>('user/verifyUser', async (_, thunkAPI) => {
-
+export const verifyUser = createAsyncThunk<string>('user/verifyUser', async (_, thunkAPI) => {
+    thunkAPI.dispatch(setUser(JSON.parse(localStorage.getItem('user')!)));
     try {
 
-        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/verifyUser`, {headers: {"Authorization": "Bearer " + JSON.parse(localStorage.getItem("user")!).token}});
+        const response = await axiosHttp.get(`/auth/verifyUser`);
 
         console.log(response.data);
 
@@ -70,7 +74,7 @@ export const verifyUser = createAsyncThunk<any>('user/verifyUser', async (_, thu
     }
     
     },
-
+        /*
     {   //verifyUser will only occur if user is in localstorage.
         condition: () => {
             if (!localStorage.getItem("user")) {
@@ -78,6 +82,7 @@ export const verifyUser = createAsyncThunk<any>('user/verifyUser', async (_, thu
             }
         }
     }
+    */
 
 );
 
@@ -88,17 +93,23 @@ export const userSlice = createSlice({
     initialState: initalState,
     reducers: {
 
+        setUser: (state, action) => {
+            state.user = action.payload;
+        }
+
     },
     extraReducers: (builder => {
         //handle cases for when user logs in.
         builder.addCase(loginUser.fulfilled, (state, action) => {
             state.error = null;
             state.user = action.payload;
+            state.loading = false;
         });
 
         builder.addCase(loginUser.rejected, (state, action) => {
             state.user = null;
             state.error = action.payload || 'An Error has occured';
+            state.loading = false;
         });
 
         //handle cases for when user registers
@@ -106,11 +117,13 @@ export const userSlice = createSlice({
         builder.addCase(registerUser.fulfilled, (state, action) => {
             state.user = action.payload;
             state.error = null;
+            state.loading = false;
         });
 
         builder.addCase(registerUser.rejected, (state, action) => {
             state.user = null;
             state.error = action.payload || 'An error has occured';
+            state.loading = false;
         });
 
 
@@ -120,13 +133,15 @@ export const userSlice = createSlice({
             const verifiedUser = JSON.parse(localStorage.getItem('user')!);
 
             state.user = verifiedUser;
+            state.loading = false;
             
 
         });
 
         builder.addCase(verifyUser.rejected, (state, action) => {
             state.user = null;
-            state.error = action.payload || 'User is not verified!';
+            state.error = null;
+            state.loading = false;
         });
 
 
@@ -137,4 +152,7 @@ export const userSlice = createSlice({
 
     })
 });
+
+export const {setUser} = userSlice.actions;
+
 

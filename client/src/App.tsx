@@ -16,7 +16,7 @@ const App = () => {
   useEffect(() => {
 
 
-    //fetch current user
+//verify the current user is authenticated
     dispatch(verifyUser());
 
   }, [dispatch]);

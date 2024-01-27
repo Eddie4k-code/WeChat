@@ -1,5 +1,5 @@
 // Import necessary Material-UI components and styles
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Container,
@@ -13,6 +13,8 @@ import {
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useAppSelector } from '../../reduxStore/configureStore';
+import { useNavigate } from 'react-router-dom';
+import { UserState } from '../../reduxStore/slices/userSlice';
 
 // Define styles using makeStyles
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,7 +36,22 @@ const useStyles = makeStyles((theme: Theme) =>
 const ServerDashboard: React.FC = () => {
   const classes = useStyles();
   const [serverName, setServerName] = useState<string>("");
-  const {user} = useAppSelector(state => state.user);
+  const {user, loading} = useAppSelector(state => state.user);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+
+    if (loading) {
+      return;
+    }
+
+    if (!user || !localStorage.getItem('user')) {
+      navigate('/login');
+    }
+
+    console.log(user);
+
+  }, [user, loading])
 
   
   const handleCreateServer = async () => {
