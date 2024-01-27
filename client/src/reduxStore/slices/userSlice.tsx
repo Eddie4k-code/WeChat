@@ -60,13 +60,12 @@ export const verifyUser = createAsyncThunk<any>('user/verifyUser', async (_, thu
 
         const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/verifyUser`, {headers: {"Authorization": "Bearer " + JSON.parse(localStorage.getItem("user")!).token}});
 
-        console.log("Is the user verified???");
-
         console.log(response.data);
 
         return response.data;
 
     } catch (err:any) {
+        localStorage.removeItem("user");
         return thunkAPI.rejectWithValue({error: err.response?.data?.ErrorMessage || 'An Error has Occured'});
     }
     
