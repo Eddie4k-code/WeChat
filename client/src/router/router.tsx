@@ -3,6 +3,8 @@ import App from '../App.tsx'
 import Login from '../pages/auth/Login.tsx'
 import Register from "../pages/auth/Register.tsx";
 import ServerDashboard from "../pages/servers/ServerDashboard.tsx";
+import { Test } from "../pages/auth/Test.tsx";
+import { ProtectedRoute } from "../pages/auth/ProtectedRoute.tsx";
 
 const router = createBrowserRouter([
     {
@@ -11,7 +13,8 @@ const router = createBrowserRouter([
     children: [
         {path: 'login', element: <Login />},
         {path: 'register', element: <Register />},
-        {path: '/dashboard', element: <ServerDashboard />}
+        {path: '/dashboard', element: <ProtectedRoute component={<ServerDashboard />} /> },
+        {path:'/test', element: <Test />}
     ]
 }
 ]);
