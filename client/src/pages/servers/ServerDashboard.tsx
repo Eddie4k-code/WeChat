@@ -39,20 +39,6 @@ const ServerDashboard: React.FC = () => {
   const {user, loading} = useAppSelector(state => state.user);
   const navigate = useNavigate();
 
-  useEffect(() => {
-
-    if (loading) {
-      return;
-    }
-
-    if (!user || !localStorage.getItem('user')) {
-      navigate('/login');
-    }
-
-    console.log(user);
-
-  }, [user, loading])
-
   
   const handleCreateServer = async () => {
     try {

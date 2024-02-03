@@ -9,8 +9,13 @@ const axiosHttp = axios.create({
 axiosHttp.interceptors.request.use(
     (config) => {
 
+        let token;
 
-        const token = JSON.parse(localStorage.getItem('user')!).token;
+        if (localStorage.getItem("user")) {
+            token = JSON.parse(localStorage.getItem('user')!).token;
+        }
+
+       
 
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
@@ -27,7 +32,7 @@ axiosHttp.interceptors.response.use(
     },
 
     (error:any) => {
-
+        return Promise.reject(error.response.data.ErrorMessage);
     } 
 )
 

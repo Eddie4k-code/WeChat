@@ -11,9 +11,16 @@ const router = createBrowserRouter([
     path: '/',
     element: <App />,
     children: [
+
+        {//The ProtectedRoute component wraps all routes that require user to be logged in
+            element: <ProtectedRoute />,
+            children: [
+                {path: 'dashboard', element: <ServerDashboard />}
+            ]
+        },
+
         {path: 'login', element: <Login />},
         {path: 'register', element: <Register />},
-        {path: '/dashboard', element: <ProtectedRoute component={<ServerDashboard />} /> },
         {path:'/test', element: <Test />}
     ]
 }

@@ -7,18 +7,16 @@ const verifyJWT = async (req: Request, res: Response, next: NextFunction) => {
     const authorizationHeader = headers.authorization as string;
 
     if (!authorizationHeader) {
-        throw new Error("Missing Authorization Header")
+        return res.status(401).json("Missing Authorization Header");
     }
 
 
     try {
+        const token = authorizationHeader.split(' ')[1];
 
-    
-    const token = authorizationHeader.split(' ')[1];
+        jwt.verify(token, process.env.JWT_SECRET!);
 
-    jwt.verify(token, process.env.JWT_SECRET!);
-
-    next();
+        next();
     } catch(err:any) {
         return res.status(401).json("Invalid JWT or Missing Authorization Header");
     }

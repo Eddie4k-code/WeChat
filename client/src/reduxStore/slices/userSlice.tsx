@@ -29,7 +29,7 @@ const initalState: UserState = {
 export const loginUser = createAsyncThunk<User, any>('user/loginUser', async (data: UserFields, thunkAPI) => {
     try {
 
-        const user = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/login`, {username: data.username, password:data.password});
+        const user = await axiosHttp.post(`/auth/login`, {username: data.username, password:data.password});
 
         localStorage.setItem('user', JSON.stringify(user.data));
         return user.data;

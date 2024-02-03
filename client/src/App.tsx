@@ -4,20 +4,20 @@ import React, { useEffect } from 'react'
 import { Navbar } from './components/Navbar'
 import { Outlet } from 'react-router-dom';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { verifyUser } from './reduxStore/slices/userSlice';
-import { AppDispatch } from './reduxStore/configureStore';
+import { AppDispatch, useAppSelector } from './reduxStore/configureStore';
 
 const App = () => {
 
   const dispatch = useDispatch<AppDispatch>();
-
+  const {user} = useAppSelector(state => state.user);
 
   useEffect(() => {
 
-
-//verify the current user is authenticated
+  //see if the current user is authenticated
     dispatch(verifyUser());
+    
 
   }, [dispatch]);
 
