@@ -5,6 +5,8 @@ import Register from "../pages/auth/Register.tsx";
 import ServerDashboard from "../pages/servers/ServerDashboard.tsx";
 import { Test } from "../pages/auth/Test.tsx";
 import { ProtectedRoute } from "../pages/auth/ProtectedRoute.tsx";
+import { ServerPage } from "../pages/servers/ServerPage.tsx"
+
 
 const router = createBrowserRouter([
     {
@@ -15,7 +17,8 @@ const router = createBrowserRouter([
         {//The ProtectedRoute component wraps all routes that require user to be logged in
             element: <ProtectedRoute />,
             children: [
-                {path: 'dashboard', element: <ServerDashboard />}
+                {path: 'dashboard', element: <ServerDashboard />},
+                {path:'join/:roomName', element: <ServerPage />}
             ]
         },
 

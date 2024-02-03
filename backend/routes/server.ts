@@ -3,6 +3,8 @@ import UserModel from '../models/User';
 import ServerModel from '../models/Server';
 import verifyJWT from '../middleware/verifyJWT';
 import Server from '../models/Server';
+import { io } from '..';
+
 
 const serverRouter = Router();
 
@@ -43,23 +45,30 @@ serverRouter.post("/api/server/join", verifyJWT, async (req: Request, res: Respo
 
     try {
 
-        const {serverName} = req.body;
+        const {serverName, user} = req.body;
 
         if (!serverName) {
             throw new Error("You must provide a server name.")
             return
         }
 
+
+        const server = await ServerModel.findOne({serverName: serverName});
+
+        if (!server) {
+            throw new Error(`No server found with the name ${serverName}`)
+        }
+
         //use web socket here to join the server in a live matter
+        io.emit("JOIN", serverName, user)
+
+        return res.status(200).json({message: `Joined Server ${serverName}`});
 
 
 
 
     } catch(err:any) {
-
-
         return res.status(400).json({ErrorMessage: err.message});
-
     }
 
 });

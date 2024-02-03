@@ -14,7 +14,6 @@ interface ServerDocument extends Document {
 
 const serverSchema = new Schema({
     serverName: {type: String, required: true},
-    channels: [{type: Schema.Types.ObjectId, ref: 'Channel'}],
     users: [{type: Schema.Types.ObjectId, ref: 'User'}],
     messages: [{
         sender: { type: String, required: true },

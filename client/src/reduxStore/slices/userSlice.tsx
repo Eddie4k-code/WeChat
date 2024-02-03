@@ -36,7 +36,7 @@ export const loginUser = createAsyncThunk<User, any>('user/loginUser', async (da
 
 
     } catch (err:any) {
-        return thunkAPI.rejectWithValue({error: err.response?.data?.ErrorMessage || 'An Error has Occured'});
+        return thunkAPI.rejectWithValue({error: err});
 
     }
 });
@@ -45,7 +45,7 @@ export const loginUser = createAsyncThunk<User, any>('user/loginUser', async (da
 export const registerUser = createAsyncThunk<User, any>('user/registerUser', async (data: UserFields, thunkAPI) => {
     try {
 
-        const newUser = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/register`, {username: data.username, password:data.password});
+        const newUser = await axiosHttp.post(`/auth/register`, {username: data.username, password:data.password});
 
         localStorage.setItem('user', JSON.stringify(newUser.data));
 
@@ -53,7 +53,8 @@ export const registerUser = createAsyncThunk<User, any>('user/registerUser', asy
 
 
     } catch (err:any) {
-        return thunkAPI.rejectWithValue({error: err.response?.data?.ErrorMessage || 'An Error has Occured'});
+        
+        return thunkAPI.rejectWithValue({error: err});
 
     }
 });
@@ -107,6 +108,8 @@ export const userSlice = createSlice({
         });
 
         builder.addCase(loginUser.rejected, (state, action) => {
+            console.log(action.error);
+            console.log(action.payload);
             state.user = null;
             state.error = action.payload || 'An Error has occured';
             state.loading = false;

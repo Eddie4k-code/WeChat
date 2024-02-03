@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import { useAppSelector } from '../../reduxStore/configureStore';
 import { useNavigate } from 'react-router-dom';
 import { UserState } from '../../reduxStore/slices/userSlice';
+import axiosHttp from '../../api/api';
 
 // Define styles using makeStyles
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,22 +37,16 @@ const useStyles = makeStyles((theme: Theme) =>
 const ServerDashboard: React.FC = () => {
   const classes = useStyles();
   const [serverName, setServerName] = useState<string>("");
-  const {user, loading} = useAppSelector(state => state.user);
-  const navigate = useNavigate();
+  const {user} = useAppSelector(state => state.user);
+  const [error, setError] = useState<any>("");
 
-  
   const handleCreateServer = async () => {
     try {
-        const response = await axios.post(
-            `${import.meta.env.VITE_REACT_APP_API_URL}/server/create`,
+        const response = await axiosHttp.post(
+            `/server/create`,
             {
                 serverName: serverName,
                 username: user!.username
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${user!.token}`
-                }
             }
         );
 
@@ -62,9 +57,9 @@ const ServerDashboard: React.FC = () => {
 };
 
   
-  const handleJoinServer = () => {
-    
+  const handleJoinServer = async () => {
     console.log('Joining an existing server...');
+    const res = await axiosHttp.post("/server/join", {serverName: serverName, user: user}).catch(err => setError(err));
   };
 
   return (
@@ -101,6 +96,8 @@ const ServerDashboard: React.FC = () => {
               label="Server Code"
               variant="outlined"
               fullWidth
+              value={serverName}
+              onChange={(e) => setServerName(e.target.value)}
             />
             <Button
               variant="contained"
@@ -113,6 +110,7 @@ const ServerDashboard: React.FC = () => {
           </Grid>
         </Grid>
       </Paper>
+      {error && error}
     </Container>
   );
 };

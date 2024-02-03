@@ -4,30 +4,21 @@ import mongoose, { mongo } from 'mongoose';
 import authRouter from "./routes/auth";
 import serverRouter from "./routes/server";
 import {createServer} from 'http';
-import Websocket from "./websocket/websocket";
+import { Server, Socket } from "socket.io";
+import socketUtil from "./socket/socket";
 require('dotenv').config();
 
 const app = express();
 const server = createServer(app);
 
-const ws = Websocket.getInstance(server);
-
-
-ws.on('connection', (socket) => {
-
-    socket.on('join', (roomCode: number) => {
-        //logic to join a server
-    }); 
-
-    socket.on("leave", (roomCode: number) => {
-        //logic to leave a server
-    });
-
-    socket.on("sendMessage", (message: any) => {
-        ws.in(message.room!).emit("messageSent", message.body);
-    });
-
+export const io = new Server(server, {
+    cors: {
+        origin: "*",
+        credentials: true
+    }
 });
+
+
 
 
 
@@ -38,8 +29,9 @@ app.use(authRouter);
 app.use(serverRouter);
 
 
-app.listen(process.env.port || 5000, () => {
+server.listen(process.env.port || 5000, () => {
     console.log("Backend is running");
+    socketUtil({io});
 });
 
 mongoose.connect(process.env.MONGO_URI!).then(() => console.log("Connected to MongoDB"));
