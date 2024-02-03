@@ -27,7 +27,7 @@ export const ServerPage = () => {
        console.log("Message retrieved");
        console.log(data);
       
-       setMessages([...messages, data.message]);
+       setMessages((prevMessages: any) => [...prevMessages, data.message]);
       });
     }
 
