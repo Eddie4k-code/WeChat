@@ -30,9 +30,9 @@ axiosHttp.interceptors.response.use(
     (response) => {
         return response;
     },
-
+    //handle processing errors for every axios request
     (error:any) => {
-        return Promise.reject(error.response.data.ErrorMessage);
+        return Promise.reject(error.response.data.ErrorMessage || "An Error has Occured");
     } 
 )
 

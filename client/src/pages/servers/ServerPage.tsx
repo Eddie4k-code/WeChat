@@ -3,31 +3,35 @@ import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../reduxStore/configureStore";
 import webSocket from "../../socket/socket";
 import { Grid, Paper, Typography, TextField, Button } from "@material-ui/core";
+import { User } from "../../models/User";
+import { UserState } from "../../reduxStore/slices/userSlice";
 
-interface MessageShape {
-  username: string
+//shape of data that is retrieved and sent through the socket event "SEND_MESSAGE"
+interface SendMessageData {
+  roomName: string
+  user: User
   message: string
 }
 
 
 export const ServerPage = () => {
-  const { user, loading } = useAppSelector((state) => state.user);
+  const { user, loading } = useAppSelector((state: UserState) => state.user);
   const { roomName } = useParams();
-  const [messages, setMessages] = useState<any>([]);
-  const [newMessage, setNewMessage] = useState<any>("");
+  const [messages, setMessages] = useState<SendMessageData[]>([]);
+  const [newMessage, setNewMessage] = useState<string>("");
 
   
 
   useEffect(() => {
     if (roomName && user) {
-      webSocket.emit("JOIN", roomName, user);
+      webSocket.emit("JOIN", {roomName: roomName, user: user});
       
-      webSocket.on("SEND_MESSAGE", (data) => {
+      webSocket.on("SEND_MESSAGE", (sendMessageData: SendMessageData) => {
 
        console.log("Message retrieved");
-       console.log(data);
+       console.log(sendMessageData);
       
-       setMessages((prevMessages: any) => [...prevMessages, data.message]);
+       setMessages((prevMessages: SendMessageData[]) => [...prevMessages, sendMessageData]);
       });
     }
 
@@ -39,7 +43,7 @@ export const ServerPage = () => {
   const handleSendMessage = () => {
     // Emit a new message to the server
     if (newMessage.trim() !== "") {
-      webSocket.emit("SEND_MESSAGE", roomName, newMessage, user);
+      webSocket.emit("SEND_MESSAGE", {roomName: roomName, user: user, message: newMessage});
       setNewMessage("");
     }
   };
@@ -59,10 +63,10 @@ export const ServerPage = () => {
       <Grid item xs={9}>
         <Paper elevation={3} style={{ padding: "20px", height: "400px", overflowY: "auto" }}>
           {/* Display Chat Messages */}
-          {messages.map((message: any) => (
-            <div key={message}>
+          {messages.map((message: SendMessageData) => (
+            <div key={message.message}>
               <Typography variant="body1">
-                <strong>{message}:</strong> {message}
+                <strong>{message.user.username}:</strong> {message.message}
               </Typography>
             </div>
           ))}
