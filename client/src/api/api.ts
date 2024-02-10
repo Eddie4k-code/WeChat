@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { store } from '../reduxStore/configureStore';
+import { toast } from 'react-toastify';
 
 const axiosHttp = axios.create({
     baseURL: `${import.meta.env.VITE_REACT_APP_API_URL}`
@@ -32,6 +33,7 @@ axiosHttp.interceptors.response.use(
     },
     //handle processing errors for every axios request
     (error:any) => {
+        toast.error(error.response.data.ErrorMessage || "An Error has Occured");
         return Promise.reject(error.response.data.ErrorMessage || "An Error has Occured");
     } 
 )

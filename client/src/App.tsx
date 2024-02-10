@@ -8,6 +8,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { verifyUser } from './reduxStore/slices/userSlice';
 import { AppDispatch, useAppSelector } from './reduxStore/configureStore';
 import webSocket from './socket/socket';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 
@@ -36,6 +39,7 @@ const App = () => {
 
   return (
     <>
+    <ToastContainer position='bottom-right' hideProgressBar theme="colored" />
     <Navbar />
     <Outlet />
     </>

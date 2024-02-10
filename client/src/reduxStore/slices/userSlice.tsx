@@ -5,6 +5,7 @@ import { User } from "../../models/User";
 import axios from 'axios';
 import axiosHttp from "../../api/api";
 import { StarRateRounded } from "@mui/icons-material";
+import { toast } from "react-toastify";
 
 
 export interface UserState {
@@ -111,7 +112,9 @@ export const userSlice = createSlice({
             console.log(action.error);
             console.log(action.payload);
             state.user = null;
+            let err: string = action.payload as string;
             state.error = action.payload || 'An Error has occured';
+            //toast.error(err);
             state.loading = false;
         });
 
@@ -126,6 +129,7 @@ export const userSlice = createSlice({
         builder.addCase(registerUser.rejected, (state, action) => {
             state.user = null;
             state.error = action.payload || 'An error has occured';
+
             state.loading = false;
         });
 
