@@ -87,7 +87,7 @@ export const userSlice = createSlice({
     initialState: initalState,
     reducers: {
 
-        setUser: (state: UserState, action: PayloadAction) => {
+        setUser: (state: UserState, action: any) => {
             state.user = action.payload;
         },
 
@@ -100,7 +100,7 @@ export const userSlice = createSlice({
     },
     extraReducers: (builder => {
         //handle cases for when user logs in.
-        builder.addCase(loginUser.fulfilled, (state: UserState, action: PayloadAction) => {
+        builder.addCase(loginUser.fulfilled, (state: UserState, action: any) => {
             state.user = action.payload;
             state.loading = false;
         });
@@ -112,7 +112,7 @@ export const userSlice = createSlice({
 
         //handle cases for when user registers
 
-        builder.addCase(registerUser.fulfilled, (state: UserState, action: PayloadAction) => {
+        builder.addCase(registerUser.fulfilled, (state: UserState, action: any) => {
             state.user = action.payload;
             state.loading = false;
         });
