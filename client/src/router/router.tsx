@@ -6,6 +6,7 @@ import ServerDashboard from "../pages/servers/ServerDashboard.tsx";
 import { Test } from "../pages/auth/Test.tsx";
 import { ProtectedRoute } from "../pages/auth/ProtectedRoute.tsx";
 import { ServerPage } from "../pages/servers/ServerPage.tsx"
+import Logout from "../pages/auth/Logout.tsx";
 
 
 const router = createBrowserRouter([
@@ -18,7 +19,8 @@ const router = createBrowserRouter([
             element: <ProtectedRoute />,
             children: [
                 {path: 'dashboard', element: <ServerDashboard />},
-                {path:'join/:roomName', element: <ServerPage />}
+                {path:'join/:roomName', element: <ServerPage />},
+                {path:'/logout', element: <Logout />}
             ]
         },
 

@@ -22,7 +22,8 @@ export const Navbar = () => {
   const {user} = useAppSelector(state => state.user);
 
   const authenticatedNavItems = [
-    {name: "Chat Servers", path:"/servers"},
+    {name: "Dashboard", path:"/dashboard"},
+    {name: 'Logout', path:"/logout"}
   ]
 
   const notAuthenticatedNavItems = [

@@ -28,13 +28,8 @@ const App = () => {
     webSocket.on('connect', () => {
       console.log("Connected to server!");
     });
-
-
-
-  //see if the current user is authenticated
-    dispatch(verifyUser());
     
-
+  
   }, [dispatch]);
 
   return (

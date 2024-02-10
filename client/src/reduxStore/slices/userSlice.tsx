@@ -1,18 +1,19 @@
 /* Handles user state throughout application */
 
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../../models/User";
 import axios from 'axios';
 import axiosHttp from "../../api/api";
-import { StarRateRounded } from "@mui/icons-material";
+import { StarRateRounded } from "@mui/icons-materi1al";
 import { toast } from "react-toastify";
 
-
+//shape of the data the user state will contain
 export interface UserState {
     user: User | null,
     error: any
     loading: boolean,
 }
+
 
 interface UserFields {
     username: string
@@ -72,19 +73,10 @@ export const verifyUser = createAsyncThunk<string>('user/verifyUser', async (_, 
 
     } catch (err:any) {
         localStorage.removeItem("user");
-        return thunkAPI.rejectWithValue({error: err.response?.data?.ErrorMessage || 'An Error has Occured'});
+        return thunkAPI.rejectWithValue({error: 'Not authenticated, please login to access that route...'});
     }
     
-    },
-        /*
-    {   //verifyUser will only occur if user is in localstorage.
-        condition: () => {
-            if (!localStorage.getItem("user")) {
-                return false;
-            }
-        }
     }
-    */
 
 );
 
@@ -95,47 +87,44 @@ export const userSlice = createSlice({
     initialState: initalState,
     reducers: {
 
-        setUser: (state, action) => {
+        setUser: (state: UserState, action: PayloadAction) => {
             state.user = action.payload;
+        },
+
+        logout: (state: UserState) => {
+            state.user = null;
+            localStorage.removeItem("user");
+            state.loading = false;
         }
 
     },
     extraReducers: (builder => {
         //handle cases for when user logs in.
-        builder.addCase(loginUser.fulfilled, (state, action) => {
-            state.error = null;
+        builder.addCase(loginUser.fulfilled, (state: UserState, action: PayloadAction) => {
             state.user = action.payload;
             state.loading = false;
         });
 
-        builder.addCase(loginUser.rejected, (state, action) => {
-            console.log(action.error);
-            console.log(action.payload);
+        builder.addCase(loginUser.rejected, (state: UserState) => {
             state.user = null;
-            let err: string = action.payload as string;
-            state.error = action.payload || 'An Error has occured';
-            //toast.error(err);
             state.loading = false;
         });
 
         //handle cases for when user registers
 
-        builder.addCase(registerUser.fulfilled, (state, action) => {
+        builder.addCase(registerUser.fulfilled, (state: UserState, action: PayloadAction) => {
             state.user = action.payload;
-            state.error = null;
             state.loading = false;
         });
 
-        builder.addCase(registerUser.rejected, (state, action) => {
+        builder.addCase(registerUser.rejected, (state: UserState) => {
             state.user = null;
-            state.error = action.payload || 'An error has occured';
-
             state.loading = false;
         });
 
 
         //handle case for when user is verified
-        builder.addCase(verifyUser.fulfilled, (state) => {
+        builder.addCase(verifyUser.fulfilled, (state: UserState) => {
 
             const verifiedUser = JSON.parse(localStorage.getItem('user')!);
 
@@ -145,7 +134,7 @@ export const userSlice = createSlice({
 
         });
 
-        builder.addCase(verifyUser.rejected, (state, action) => {
+        builder.addCase(verifyUser.rejected, (state: UserState) => {
             state.user = null;
             state.error = null;
             state.loading = false;
@@ -160,6 +149,6 @@ export const userSlice = createSlice({
     })
 });
 
-export const {setUser} = userSlice.actions;
+export const {setUser, logout} = userSlice.actions;
 
 

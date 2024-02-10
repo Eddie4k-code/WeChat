@@ -9,6 +9,7 @@ import {
   Grid,
   TextField,
 } from '@material-ui/core';
+import { toast } from 'react-toastify';
 
 import axios from 'axios';
 import { useSelector } from 'react-redux';
@@ -33,33 +34,21 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// Define the ServerDashboard component
+
 const ServerDashboard: React.FC = () => {
   const classes = useStyles();
   const [serverName, setServerName] = useState<string>("");
-  const {user} = useAppSelector(state => state.user);
-  const [error, setError] = useState<any>("");
+  const navigate = useNavigate();
 
-  const handleCreateServer = async () => {
-    try {
-        const response = await axiosHttp.post(
-            `/server/create`,
-            {
-                serverName: serverName,
-                username: user!.username
-            }
-        );
 
-        console.log("Server Created", response.data.server.serverName);
-    } catch (error: any) {
-        console.error("Error creating server", error.response?.data || error.message);
-    }
-};
-
-  
   const handleJoinServer = async () => {
-    console.log('Joining an existing server...');
-    const res = await axiosHttp.post("/server/join", {serverName: serverName, user: user}).catch(err => setError(err));
+
+    if (serverName.length == 0) {
+      toast.error("Room Name cannot be empty!");
+      return
+    }
+
+    navigate(`/join/${serverName}`);
   };
 
   return (
@@ -68,32 +57,11 @@ const ServerDashboard: React.FC = () => {
         <Typography variant="h5" gutterBottom>
           Server Dashboard
         </Typography>
-        <Grid container spacing={2}>
-          {/* Create Server Section */}
-          <Grid item xs={12} sm={6}>
-            <Typography variant="h6">Create a New Server</Typography>
-            <TextField
-              label="Server Name"
-              variant="outlined"
-              fullWidth
-              value={serverName}
-              onChange={(e) => setServerName(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              onClick={handleCreateServer}
-            >
-              Create Server
-            </Button>
-          </Grid>
-
           {/* Join Server Section */}
           <Grid item xs={12} sm={6}>
             <Typography variant="h6">Join an Existing Server</Typography>
             <TextField
-              label="Server Code"
+              label="Room Name"
               variant="outlined"
               fullWidth
               value={serverName}
@@ -108,9 +76,7 @@ const ServerDashboard: React.FC = () => {
               Join Server
             </Button>
           </Grid>
-        </Grid>
       </Paper>
-      {error && error}
     </Container>
   );
 };

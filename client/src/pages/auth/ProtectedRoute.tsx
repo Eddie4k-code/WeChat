@@ -1,12 +1,20 @@
 import {RouteProps, Navigate, Route, useNavigate, useLocation, Outlet} from 'react-router-dom';
 import React from 'react';
-import { useAppSelector } from "../../reduxStore/configureStore";
+import { AppDispatch, useAppSelector } from "../../reduxStore/configureStore";
 import {useEffect} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { verifyUser } from '../../reduxStore/slices/userSlice';
 
 
 
 export const ProtectedRoute = () => {
     const { user, loading } = useAppSelector((state) => state.user);
+    const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+      //check if user JWT is valid.
+          dispatch(verifyUser());
+    }, []);
   
     // Check if authentication is still loading
     if (loading) {
@@ -14,7 +22,7 @@ export const ProtectedRoute = () => {
     }
   
     // Check if the user is not logged in
-    if (!user) {
+    if (!user || !localStorage.getItem("user")) {
       return <Navigate to="/login" />;
     }
   

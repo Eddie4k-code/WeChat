@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
+import {useNavigate} from 'react-router-dom'
 import { Container, Paper, Avatar, Typography, TextField, Button, makeStyles } from '@material-ui/core';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { linkClasses } from '@mui/material';
@@ -37,18 +38,24 @@ const Login = () => {
 
   const classes = useStyles();
   const dispatch = useDispatch<AppDispatch>();
-  const {user, error} = useAppSelector(state => state.user);
+  const {user} = useAppSelector(state => state.user);
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (e:React.FormEvent) => {
     //make dispatch to our async thunk method from redux to login user.
     e.preventDefault();
     setLoading(true);
     await dispatch(loginUser({username, password})).then(data => console.log(data));
-    console.log(user);
     setLoading(false);
+
+    if (localStorage.getItem("user")) {
+      navigate("/dashboard");
+    }
+
+    
   }
 
   return (
@@ -95,7 +102,6 @@ const Login = () => {
           </Button>
         </form>
       </Paper>
-      {error && <h1>{error.error}</h1>}
     </Container>
   );
 };

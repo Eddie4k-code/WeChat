@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import mongoose, { mongo } from 'mongoose';
 import authRouter from "./routes/auth";
-import serverRouter from "./routes/server";
 import {createServer} from 'http';
 import { Server, Socket } from "socket.io";
 import socketUtil from "./socket/socket";
@@ -26,7 +25,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use(authRouter);
-app.use(serverRouter);
 
 
 server.listen(process.env.port || 5000, () => {

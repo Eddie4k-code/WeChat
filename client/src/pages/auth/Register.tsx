@@ -5,6 +5,8 @@ import { linkClasses } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { AppDispatch, useAppSelector } from '../../reduxStore/configureStore';
 import { registerUser } from '../../reduxStore/slices/userSlice';
+import {useNavigate} from 'react-router-dom';
+
 
 const useStyles = makeStyles((theme) => ({
 
@@ -36,15 +38,19 @@ const Register = () => {
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
-  const {user, error} = useAppSelector(state => state.user);
-
+  const {user} = useAppSelector(state => state.user);
+  const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
 
     e.preventDefault();
     setLoading(true);
     await dispatch(registerUser({username:username, password: password})).then(data => console.log(data));
-    console.log(user);
+
+    if (localStorage.getItem("user")) {
+      navigate("/dashboard");
+    }
+
   }
 
   return (
@@ -93,7 +99,6 @@ const Register = () => {
           </Button>
         </form>
       </Paper>
-      {error && <h1>{error.error}</h1>}
     </Container>
   );
 };
