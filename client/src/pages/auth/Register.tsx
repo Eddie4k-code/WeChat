@@ -1,4 +1,4 @@
-import React, { ReactEventHandler, useState } from 'react';
+import React, { ReactEventHandler, useState, useEffect } from 'react';
 import { Container, Paper, Avatar, Typography, TextField, Button, makeStyles } from '@material-ui/core';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { linkClasses } from '@mui/material';
@@ -42,6 +42,14 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
+
+
+    useEffect(() => {
+      /* If user is already logged in redirect them to dashbaord (if "user" in localStorage were invalid they would then be redirected back to login*/
+      if (localStorage.getItem("user")) {
+        navigate("/dashboard")
+      }
+    }, [])
 
     e.preventDefault();
     setLoading(true);

@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom'
 import { Container, Paper, Avatar, Typography, TextField, Button, makeStyles } from '@material-ui/core';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -43,6 +43,16 @@ const Login = () => {
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+     /* If user is already logged in redirect them to dashbaord (if "user" in localStorage were invalid they would then be redirected back to login*/
+    if (localStorage.getItem("user")) {
+      navigate("/dashboard")
+    }
+    
+  }, []);
+
 
   const handleLogin = async (e:React.FormEvent) => {
     //make dispatch to our async thunk method from redux to login user.

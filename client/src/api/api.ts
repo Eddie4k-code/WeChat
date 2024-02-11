@@ -33,6 +33,7 @@ axiosHttp.interceptors.response.use(
     },
     //handle processing errors for every axios request
     (error:any) => {
+        console.log(error);
         toast.error(error.response.data.ErrorMessage || "An Error has Occured");
         return Promise.reject(error.response.data.ErrorMessage || "An Error has Occured");
     } 

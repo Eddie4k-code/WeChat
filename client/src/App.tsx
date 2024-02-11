@@ -21,16 +21,15 @@ const App = () => {
   const {user} = useAppSelector(state => state.user);
   
   
-  
 
   useEffect(() => {
 
     webSocket.on('connect', () => {
       console.log("Connected to server!");
     });
+      
     
-  
-  }, [dispatch]);
+  }, []);
 
   return (
     <>

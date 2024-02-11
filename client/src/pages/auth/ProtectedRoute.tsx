@@ -12,7 +12,7 @@ export const ProtectedRoute = () => {
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-      //check if user JWT is valid.
+      //check if user JWT is valid on every protected route rerender.
           dispatch(verifyUser());
     }, []);
   
@@ -22,7 +22,7 @@ export const ProtectedRoute = () => {
     }
   
     // Check if the user is not logged in
-    if (!user || !localStorage.getItem("user")) {
+    if (!user && !loading) {
       return <Navigate to="/login" />;
     }
   
